@@ -46,11 +46,11 @@
 
 ```bash
 # 1. Подготовка библиотек (сборка контрактов)
-prepare-libs.bat
+prepare-libs.sh
 
 # 2. Сборка и запуск
-build.bat
-start.bat
+build.sh
+start.sh
 ```
 
 ### Вариант 2: Если JAR уже собраны
