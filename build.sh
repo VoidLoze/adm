@@ -44,7 +44,7 @@ cd ..
 
 echo
 echo "[7/7] Building Docker images..."
-docker compose build
+docker-compose build
 
 echo
 echo "============================================"

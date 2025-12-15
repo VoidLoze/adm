@@ -8,11 +8,11 @@ echo "============================================"
 
 echo
 echo "Stopping existing containers..."
-docker compose down --remove-orphans
+docker-compose down
 
 echo
 echo "Starting all services..."
-docker compose up -d
+docker-compose up -d
 
 echo
 echo "Waiting for services to start..."
@@ -33,6 +33,3 @@ echo "  - Zipkin Tracing:    http://localhost:9411"
 echo "  - Prometheus:        http://localhost:9090"
 echo "  - Grafana:           http://localhost:3000 (admin/admin)"
 echo "  - Jenkins:           http://localhost:8085"
-echo
-echo "To view logs: docker compose logs -f"
-echo "To stop all: docker compose down"

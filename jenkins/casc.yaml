@@ -19,6 +19,11 @@ jenkins:
           - key: "JAVA_HOME"
             value: "/opt/java/openjdk"
 
+plugins:
+  required:
+    - workflow-aggregator:latest
+    - job-dsl:latest
+
 tool:
   jdk:
     installations:
@@ -59,4 +64,3 @@ unclassified:
   location:
     url: "http://localhost:8085/"
     adminAddress: "admin@localhost"
-
