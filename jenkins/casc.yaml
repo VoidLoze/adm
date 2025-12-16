@@ -1,14 +1,13 @@
-# Jenkins Configuration as Code
 jenkins:
   systemMessage: "Microservices CI/CD Pipeline - Configured automatically"
-  
+
   securityRealm:
     local:
       allowsSignup: false
       users:
         - id: "admin"
           password: "admin"
-  
+
   authorizationStrategy:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false
@@ -17,19 +16,13 @@ jenkins:
     - envVars:
         env:
           - key: "JAVA_HOME"
-            value: "/opt/java/openjdk"
-
-plugins:
-  required:
-    - workflow-aggregator:latest
-    - job-dsl:latest
+            value: "/opt/java/openjdk-17"
 
 tool:
   jdk:
     installations:
-      - name: "JDK21"
-        home: "/opt/java/openjdk"
-  
+      - name: "JDK17"
+        home: "/opt/java/openjdk-17"
   maven:
     installations:
       - name: "Maven"
@@ -39,6 +32,15 @@ tool:
                 - maven:
                     id: "3.9.6"
 
+plugins:
+  required:
+    - workflow-aggregator:latest
+    - job-dsl:latest
+    - git:latest
+    - credentials:latest
+    - workflow-job:latest
+    - pipeline-groovy-lib:latest
+
 jobs:
   - script: >
       pipelineJob('microservices-pipeline') {
@@ -47,12 +49,13 @@ jobs:
             scm {
               git {
                 remote {
-                  url('/workspace')
+                  url('https://github.com/nikitanovikov/AdmZachet.git')  // укажите ваш репо
+                  credentialsId('git-credentials')                        // если приватный
                 }
-                branches('*/main', '*/master')
+                branches('*/main')                                         // ваша основная ветка
               }
             }
-            scriptPath('Jenkinsfile')
+            scriptPath('Jenkinsfile')                                      // путь внутри репо
           }
         }
         triggers {

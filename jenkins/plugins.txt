@@ -1,0 +1,7 @@
+configuration-as-code
+workflow-aggregator
+git
+timestamper
+junit
+ws-cleanup
+docker-workflow
