@@ -16,6 +16,9 @@ RUN groupadd -r javauser && useradd -r -g javauser javauser
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
 
+# Проверяем что JAR файл существует
+RUN ls -lh /app/app.jar || (echo "JAR file not found!" && exit 1)
+
 # Меняем владельца
 RUN chown javauser:javauser /app/app.jar
 

@@ -167,6 +167,7 @@ services:
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SERVER_PORT=8082
       - SERVER_ADDRESS=0.0.0.0
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=prometheus,health,info
       - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
       - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
@@ -177,10 +178,11 @@ services:
       - microservices-net
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8082/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8082/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 60s
 
 
   # Demo REST API (основной сервис)
@@ -190,7 +192,7 @@ services:
       dockerfile: Dockerfile
     container_name: demo-rest
     ports:
-      - "8080:8080"
+      - "8084:8080"
     environment:
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SERVER_ADDRESS=0.0.0.0
