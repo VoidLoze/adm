@@ -38,7 +38,7 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     volumes:
-    - /Users/nikitanovikov/Downloads/AdmZachet/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     - prometheus-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -122,7 +122,9 @@ services:
       - SERVER_PORT=8081
       - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
       - SERVER_ADDRESS=0.0.0.0
-      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=prometheus
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=prometheus,health,info
+      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
+      - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -141,7 +143,11 @@ services:
     environment:
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SERVER_PORT=8083
+      - SERVER_ADDRESS=0.0.0.0
       - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=prometheus,health,info
+      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
+      - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -160,8 +166,10 @@ services:
     environment:
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SERVER_PORT=8082
-      - SPRING_MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=prometheus,health,info
-      - SPRING_MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
+      - SERVER_ADDRESS=0.0.0.0
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=prometheus,health,info
+      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
+      - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -169,8 +177,9 @@ services:
       - microservices-net
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health || exit 1" ]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8082/actuator/health"]
       interval: 10s
+      timeout: 5s
       retries: 5
 
 
@@ -184,8 +193,12 @@ services:
       - "8080:8080"
     environment:
       - SPRING_RABBITMQ_HOST=rabbitmq
+      - SERVER_ADDRESS=0.0.0.0
       - GRPC_CLIENT_ANALYTICS_SERVICE_ADDRESS=static://analytics-service:9090
       - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=prometheus,health,info
+      - MANAGEMENT_ENDPOINT_PROMETHEUS_ENABLED=true
+      - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
     depends_on:
       rabbitmq:
         condition: service_healthy
